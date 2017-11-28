@@ -67,10 +67,10 @@ class Yams{
 		if (tab_score[11][index] < 0)
 				System.out.println("(12) Yams : 5 dés identiques - 50 points");
 		if (tab_score[12][index] < 0)
-				System.out.println("(13) Chance : Somme des 5 dés");
+				System.out.println("(13) Chance : Somme des 5 dés\n\n");
 	}
 
-	static boolean save_the_die (int [] tab_die, int nb_die) {
+	static boolean relaunch_the_die (int [] tab_die, int nb_die) {
 
 		Scanner	sc = new Scanner (System.in);
 		String	tmp;
@@ -79,7 +79,7 @@ class Yams{
 		test = 1;
 		while (test != 0)
 		{
-			System.out.print("Voulez-vous garder le de nº" + nb_die + " ? (oui / non) : ");
+			System.out.print("Voulez-vous relancer le dé nº" + ( nb_die + 1) + " ? (oui / non) : ");
 			tmp = sc.nextLine();
 			if ((test = tmp.compareToIgnoreCase("oui")) != 0)
 			{
@@ -101,7 +101,7 @@ class Yams{
 		test = 1;
 		while (test != 0)
 		{
-			System.out.println("Voulez-vous relancer au moins un de ? (oui / non) :");
+			System.out.println("Voulez-vous relancer au moins un dé ? (oui / non) :");
 			tmp = sc.nextLine();
 			if ((test = tmp.compareToIgnoreCase("oui")) != 0)
 			{
@@ -114,12 +114,10 @@ class Yams{
 		return (false);
 	}
 
-	static void time_to_play (int [] [] tab_score, int index) {
+	static int [] time_to_play (int [] [] tab_score, int index) {
 
 		int [] tab_die = new int [5];
 		int nb_essai;
-//		int score;
-//		int contract_nb;
 		int nb_die;
 
 		nb_essai = 1;
@@ -130,21 +128,48 @@ class Yams{
 				while (nb_die <= 4)
 					tab_die[nb_die++] = (int)(Math.random() * 6 + 1);
 			nb_die = 0;
-			System.out.println("Les des affichent  : " + tab_die [0] + ", " + tab_die[1] + ", " + tab_die[2] + ", " + tab_die[3] + ", " + tab_die[4]);
+			System.out.println("Les dés affichent  : " + tab_die [0] + ", " + tab_die[1] + ", " + tab_die[2] + ", " + tab_die[3] + ", " + tab_die[4]);
 			if (nb_essai < 3) 
 			{
 				if (!retry())
 					break;
 				while (nb_die <= 4)
 				{
-					if (save_the_die(tab_die, nb_die) == false)
+					if (relaunch_the_die(tab_die, nb_die))
 						tab_die[nb_die] = (int)(Math.random() * 6 + 1);
 					nb_die++;
 				}
 			}
 			nb_essai++;
 		}
+		return (tab_die);
 	}
+
+	static void choose_contract (int [] tab_die, int [] [] tab_score, int index) {
+
+		int		contract_nb;
+		int		i;
+
+		System.out.print("Quel contrat souhaitez-vous remplir ? (1 à 13) : ");
+		contract_nb = in.nextInt();
+		tab_score[contract_nb][index]++;
+		i = 0;
+		if (contract_nb >= 1 && contract_nb <= 6)
+		{
+			while (i < tab_die.length)
+			{
+				if (tab_die[i] == contract_nb)
+					tab_score[contract_nb][index]++;
+				i++;
+			}
+			tab_score[contract_nb][index] = tab_score[contract_nb][index] * contract_nb;
+		}
+		else if (contract_nb == 13)
+			while (i < tab_die.length)
+				tab_score[contract_nb][index] = tab_score[contract_nb][index] + tab_die[i++];
+		System.out.println("Score réaliser pour le contrat " + contract_nb + " : " + tab_score[contract_nb][index]);
+	}
+
 	public static void main (String [] args){
 	
 		int		nb_player;
@@ -172,6 +197,6 @@ class Yams{
 			test = tmp.compareToIgnoreCase("lancer");
 		}
 		contracts_list(tab_score, index, tab_firstname);
-		time_to_play(tab_score, index);
+		choose_contract(time_to_play(tab_score, index), tab_score, index);
 	}
 }
