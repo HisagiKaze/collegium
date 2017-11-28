@@ -18,6 +18,15 @@ class Yams{
 		}
 	}
 
+	static void init_simple_tab (int [] tab) {
+
+		int		i;
+
+		i = 0;
+		while (i < tab.length)
+			tab[i++] = 0;
+	}
+
 	static void init_tab_firstname (String [] tab_firstname, int nb_player) {
 
 		int		i;
@@ -101,7 +110,7 @@ class Yams{
 		test = 1;
 		while (test != 0)
 		{
-			System.out.println("Voulez-vous relancer au moins un dé ? (oui / non) :");
+			System.out.print("Voulez-vous relancer au moins un dé ? (oui / non) :");
 			tmp = sc.nextLine();
 			if ((test = tmp.compareToIgnoreCase("oui")) != 0)
 			{
@@ -145,29 +154,135 @@ class Yams{
 		return (tab_die);
 	}
 
-	static void choose_contract (int [] tab_die, int [] [] tab_score, int index) {
+	static void ft_nbocc (int [] tab_die, int [] nb_occ) {
+
+			int		i;
+			int		x;
+
+			i = 0;
+			x = 1;
+			while (x <= 6)
+			{
+				while (i < tab_die.length)
+				{
+					if (x == tab_die[i])
+						nb_occ[x-1]++;
+					i++;
+				}
+				x++;
+				i = 0;
+			}
+		}
+
+	static int sum_tab (int [] tab_die) {
+
+		int		i;
+		int		x;
+
+		i = 0;
+		x = 0;
+		while (i < tab_die.length)
+			x = tab_die[i] + x;
+		return (x);
+	}
+
+	static void verify_ifc_ispo (int [] tab_die, int [] [] tab_score, int index, int contract_nb) {
+
+		boolean		possible = false;
+		boolean		fullPair = false;
+		boolean		fullBre = false;
+		int			i;
+		int [] 		nb_occ = new int [6];
+
+		init_simple_tab(nb_occ);
+		i = 0;
+		if (contract_nb == 6)
+		{
+			while (i < nb_occ.length)
+			{
+				if (nb_occ[i++] >= 3)
+				{
+					possible = true;
+					tab_score[contract_nb][index] = sum_tab(tab_die);
+				}
+			}
+		}
+		else if (contract_nb == 8)
+		{
+			while (i < nb_occ.length)
+			{
+				if (nb_occ[i++] >= 4)
+				{
+					possible = true;
+					tab_score[contract_nb][index] = sum_tab(tab_die);
+				}
+			}
+		}
+		else if (contract_nb == 7)
+		{
+			while (i < nb_occ.length)
+				if (nb_occ[i++] >= 3)
+					fullBre = true;
+			i = 0;
+			while (i < nb_occ.length)
+				if (nb_occ[i++] >= 2)
+					fullPair = true;
+			if (fullPair && fullBre)
+			{
+				possible = true;
+				tab_score[contract_nb][index] = 25;
+			}
+		}
+		else if (contract_nb == 11)
+		{
+			while (i < nb_occ.length)
+			{
+				if (nb_occ[i++] == 5)
+				{
+					possible = true;
+					tab_score[contract_nb][index] = 50;
+				}
+			}
+		}
+		if (!possible)
+		{
+			System.out.println("Ce contrat ne peut pas être rempli avec ces nombres.");
+			tab_score[contract_nb][index] = -1;
+			choose_contract(tab_die, tab_score, index);
+		}
+	}
+
+	static int choose_contract (int [] tab_die, int [] [] tab_score, int index) {
 
 		int		contract_nb;
 		int		i;
 
 		System.out.print("Quel contrat souhaitez-vous remplir ? (1 à 13) : ");
 		contract_nb = in.nextInt();
-		tab_score[contract_nb][index]++;
+		if (contract_nb < 1 || contract_nb > 13 || tab_score[contract_nb][index] != -1)
+		{
+			System.out.println("Merci d'en choisir un compris dans l'interval 1 à 13 et que vous n'avez pas encore validé.");
+			contract_nb = choose_contract(tab_die, tab_score, index);
+		}
+		tab_score[contract_nb][index]++;				//Mise à 0 du score pour le contrat selectionné par le joueur
 		i = 0;
 		if (contract_nb >= 1 && contract_nb <= 6)
 		{
 			while (i < tab_die.length)
 			{
 				if (tab_die[i] == contract_nb)
-					tab_score[contract_nb][index]++;
+					tab_score[contract_nb - 1][index]++;
 				i++;
 			}
-			tab_score[contract_nb][index] = tab_score[contract_nb][index] * contract_nb;
+			tab_score[contract_nb - 1][index] = tab_score[contract_nb - 1][index] * (contract_nb - 1);
 		}
 		else if (contract_nb == 13)
 			while (i < tab_die.length)
-				tab_score[contract_nb][index] = tab_score[contract_nb][index] + tab_die[i++];
+				tab_score[contract_nb - 1][index] = tab_score[contract_nb - 1][index] + tab_die[i++];
+		else if (contract_nb >= 7)
+			verify_ifc_ispo(tab_die, tab_score, index, (contract_nb - 1));
 		System.out.println("Score réaliser pour le contrat " + contract_nb + " : " + tab_score[contract_nb][index]);
+		return (contract_nb);
 	}
 
 	public static void main (String [] args){
@@ -175,6 +290,7 @@ class Yams{
 		int		nb_player;
 		int		index;
 		int		test;
+		int		contract_nb;
 		String	tmp;
 		Scanner	sc = new Scanner (System.in);
 		int i;
@@ -197,6 +313,6 @@ class Yams{
 			test = tmp.compareToIgnoreCase("lancer");
 		}
 		contracts_list(tab_score, index, tab_firstname);
-		choose_contract(time_to_play(tab_score, index), tab_score, index);
+		contract_nb = choose_contract(time_to_play(tab_score, index), tab_score, index);
 	}
 }
