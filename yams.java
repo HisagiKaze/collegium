@@ -122,8 +122,8 @@ class Yams{
 //		int contract_nb;
 		int nb_die;
 
-		nb_essai = 0;
-		while (nb_essai++ <= 2)
+		nb_essai = 1;
+		while (nb_essai <= 3)
 		{
 			nb_die = 0;
 			if (nb_essai == 1)
@@ -131,7 +131,7 @@ class Yams{
 					tab_die[nb_die++] = (int)(Math.random() * 6 + 1);
 			nb_die = 0;
 			System.out.println("Les des affichent  : " + tab_die [0] + ", " + tab_die[1] + ", " + tab_die[2] + ", " + tab_die[3] + ", " + tab_die[4]);
-			if(nb_essai != 2) 
+			if (nb_essai < 3) 
 			{
 				if (!retry())
 					break;
@@ -142,6 +142,7 @@ class Yams{
 					nb_die++;
 				}
 			}
+			nb_essai++;
 		}
 	}
 	public static void main (String [] args){
