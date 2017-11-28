@@ -3,7 +3,7 @@ import java.util.Scanner;
 class Yams{
 	static Scanner in = new Scanner (System.in);
 
-	public static void init_tab_score (int [] [] tab_score){
+	static void init_tab_score (int [] [] tab_score) {
 
 		int		i;
 		int		y;
@@ -18,7 +18,7 @@ class Yams{
 		}
 	}
 
-	public static void init_tab_firstname (String [] tab_firstname, int nb_player){
+	static void init_tab_firstname (String [] tab_firstname, int nb_player) {
 
 		int		i;
 		Scanner sc = new Scanner (System.in);
@@ -39,7 +39,7 @@ class Yams{
 			System.out.println(tab_firstname[i++]);
 	}
 
-	public static void contracts_list (int [] [] tab_score, int index, String tab_firstname []) {
+	static void contracts_list (int [] [] tab_score, int index, String tab_firstname []) {
 
 		System.out.println("\n" + tab_firstname[index] + " doit encore réaliser les contrats suivants :");
 		if (tab_score[0][index] < 0)
@@ -70,15 +70,80 @@ class Yams{
 				System.out.println("(13) Chance : Somme des 5 dés");
 	}
 
-	public static void time_to_play (int [] [] tab_score, int index) {
+	static boolean save_the_die (int [] tab_die, int nb_die) {
+
+		Scanner	sc = new Scanner (System.in);
+		String	tmp;
+		int		test;
+
+		test = 1;
+		while (test != 0)
+		{
+			System.out.print("Voulez-vous garder le de nº" + nb_die + " ? (oui / non) : ");
+			tmp = sc.nextLine();
+			if ((test = tmp.compareToIgnoreCase("oui")) != 0)
+			{
+				if ((test = tmp.compareToIgnoreCase("non")) == 0)
+					return (false);
+			}
+			else
+				return (true);
+		}
+		return (false);
+	}
+
+	static boolean retry () {
+
+		int		test;
+		String	tmp;
+		Scanner	sc = new Scanner (System.in);
+
+		test = 1;
+		while (test != 0)
+		{
+			System.out.println("Voulez-vous relancer au moins un de ? (oui / non) :");
+			tmp = sc.nextLine();
+			if ((test = tmp.compareToIgnoreCase("oui")) != 0)
+			{
+				if ((test = tmp.compareToIgnoreCase("non")) == 0)
+					return(false);
+			}
+			else
+				return (true);
+		}
+		return (false);
+	}
+
+	static void time_to_play (int [] [] tab_score, int index) {
 
 		int [] tab_die = new int [5];
 		int nb_essai;
-		int score;
-		int contract_nb;
+//		int score;
+//		int contract_nb;
 		int nb_die;
+
+		nb_essai = 0;
+		while (nb_essai++ <= 2)
+		{
+			nb_die = 0;
+			if (nb_essai == 1)
+				while (nb_die <= 4)
+					tab_die[nb_die++] = (int)(Math.random() * 6 + 1);
+			nb_die = 0;
+			System.out.println("Les des affichent  : " + tab_die [0] + ", " + tab_die[1] + ", " + tab_die[2] + ", " + tab_die[3] + ", " + tab_die[4]);
+			if(nb_essai != 2) 
+			{
+				if (!retry())
+					break;
+				while (nb_die <= 4)
+				{
+					if (save_the_die(tab_die, nb_die) == false)
+						tab_die[nb_die] = (int)(Math.random() * 6 + 1);
+					nb_die++;
+				}
+			}
+		}
 	}
-	
 	public static void main (String [] args){
 	
 		int		nb_player;
@@ -86,6 +151,7 @@ class Yams{
 		int		test;
 		String	tmp;
 		Scanner	sc = new Scanner (System.in);
+		int i;
 
 		System.out.println("Bonjour et bienvenue dans le jeu du YAMS.\nLes règles sont simples :\nChaque joueur a 3 lancés de dé par tour, et il y a 13 tours.\nÀ chaque lancé de dé, vous aurez le choix de garder ou non l'un ou plusieurs des 5 dés.\nLe but étant de faire un maximum de point en remplissant les contrats.\n");
 		System.out.print("Entrez le nombre de joueurs : ");
@@ -105,5 +171,6 @@ class Yams{
 			test = tmp.compareToIgnoreCase("lancer");
 		}
 		contracts_list(tab_score, index, tab_firstname);
+		time_to_play(tab_score, index);
 	}
 }
