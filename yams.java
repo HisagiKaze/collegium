@@ -3,29 +3,36 @@ import java.util.Scanner;
 class Yams{
 	static Scanner in = new Scanner (System.in);
 
-	static void init_tab_score (int [] [] tab_score) {
-
-		int		i;
-		int		y;
-
-		i = 0;
-		while (i < tab_score.length)
-		{
-			y = 0;
-			while (y < tab_score[i].length)
-				tab_score[i][y++] = -1;
-			i++;
-		}
-	}
-
-	static void init_simple_tab (int [] tab) {
+	static void init_simple_tab (int [] tab, int n) {
 
 		int		i;
 
 		i = 0;
 		while (i < tab.length)
-			tab[i++] = 0;
+			tab[i++] = n;
 	}
+
+	static void init_tab_score (int [] [] tab_score) {
+
+		int		i;
+
+		i = 0;
+		while (i < tab_score.length)
+			init_simple_tab(tab_score[i++], -1);
+	}
+
+	/*static void sort_tab_die (int [] tab_die) {
+
+		boolean		test;
+		int			i;
+
+		i = 0;
+		test = false;
+		while (test)
+			while (i < tab_die.length - 1)
+				if (tab_die[i] = tab_die[i + 1])
+					test = false;
+	} */
 
 	static void init_tab_firstname (String [] tab_firstname, int nb_player) {
 
@@ -182,7 +189,7 @@ class Yams{
 		i = 0;
 		x = 0;
 		while (i < tab_die.length)
-			x = tab_die[i] + x;
+			x = tab_die[i++] + x;
 		return (x);
 	}
 
@@ -194,17 +201,19 @@ class Yams{
 		int			i;
 		int [] 		nb_occ = new int [6];
 
-		init_simple_tab(nb_occ);
+		init_simple_tab(nb_occ, 0);
+		ft_nbocc(tab_die, nb_occ);
 		i = 0;
 		if (contract_nb == 6)
 		{
 			while (i < nb_occ.length)
 			{
-				if (nb_occ[i++] >= 3)
+				if (nb_occ[i] >= 3)
 				{
 					possible = true;
 					tab_score[contract_nb][index] = sum_tab(tab_die);
 				}
+				i++;
 			}
 		}
 		else if (contract_nb == 8)
@@ -264,7 +273,7 @@ class Yams{
 			System.out.println("Merci d'en choisir un compris dans l'interval 1 à 13 et que vous n'avez pas encore validé.");
 			contract_nb = choose_contract(tab_die, tab_score, index);
 		}
-		tab_score[contract_nb][index]++;				//Mise à 0 du score pour le contrat selectionné par le joueur
+		tab_score[contract_nb - 1][index]++;				//Mise à 0 du score pour le contrat selectionné par le joueur
 		i = 0;
 		if (contract_nb >= 1 && contract_nb <= 6)
 		{
@@ -274,14 +283,14 @@ class Yams{
 					tab_score[contract_nb - 1][index]++;
 				i++;
 			}
-			tab_score[contract_nb - 1][index] = tab_score[contract_nb - 1][index] * (contract_nb - 1);
+			tab_score[contract_nb - 1][index] = tab_score[contract_nb - 1][index] * (contract_nb);
 		}
 		else if (contract_nb == 13)
 			while (i < tab_die.length)
 				tab_score[contract_nb - 1][index] = tab_score[contract_nb - 1][index] + tab_die[i++];
 		else if (contract_nb >= 7)
 			verify_ifc_ispo(tab_die, tab_score, index, (contract_nb - 1));
-		System.out.println("Score réaliser pour le contrat " + contract_nb + " : " + tab_score[contract_nb][index]);
+		System.out.println("Score réaliser pour le contrat " + contract_nb + " : " + tab_score[contract_nb - 1][index]);
 		return (contract_nb);
 	}
 
