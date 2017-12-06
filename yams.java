@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.Arrays;
 
 class Yams{
 	static Scanner in = new Scanner (System.in);
@@ -20,19 +21,6 @@ class Yams{
 		while (i < tab_score.length)
 			init_simple_tab(tab_score[i++], -1);
 	}
-
-	/*static void sort_tab_die (int [] tab_die) {
-
-		boolean		test;
-		int			i;
-
-		i = 0;
-		test = false;
-		while (test)
-			while (i < tab_die.length - 1)
-				if (tab_die[i] = tab_die[i + 1])
-					test = false;
-	} */
 
 	static void init_tab_firstname (String [] tab_firstname, int nb_player) {
 
@@ -161,7 +149,7 @@ class Yams{
 		return (tab_die);
 	}
 
-	static void ft_nbocc (int [] tab_die, int [] nb_occ) {
+	static void ft_nbocc (int [] tab_die, int [] nb_occ) { // fonction nombre occurence
 
 			int		i;
 			int		x;
@@ -193,18 +181,19 @@ class Yams{
 		return (x);
 	}
 
-	static void verify_ifc_ispo (int [] tab_die, int [] [] tab_score, int index, int contract_nb) {
+	static void verify_ifc_ispo (int [] tab_die, int [] [] tab_score, int index, int contract_nb) { // verify ifcontract is possible
 
 		boolean		possible = false;
 		boolean		fullPair = false;
 		boolean		fullBre = false;
 		int			i;
+		int			n;
 		int [] 		nb_occ = new int [6];
 
 		init_simple_tab(nb_occ, 0);
 		ft_nbocc(tab_die, nb_occ);
 		i = 0;
-		if (contract_nb == 6)
+		if (contract_nb == 6) // CAUTION verify_ifc_ispo(..., contract_nb - 1);
 		{
 			while (i < nb_occ.length)
 			{
@@ -253,6 +242,21 @@ class Yams{
 				}
 			}
 		}
+		else if (contract_nb == 9 || contract_nb == 10)
+		{
+			n = 0;
+			Arrays.sort(tab_die);
+			while (i < tab_die.length - 2)
+			{
+				if ((tab_die[i] + 1) == tab_die[i + 1])
+					n++;
+				System.out.println("tab_die[i] = " + tab_die[i]);
+				System.out.println("n = " + n);
+				i++;
+			}
+			if ((n == 4 && contract_nb == 9) || (n == 5 && contract_nb == 10))
+				possible = true;
+		}
 		if (!possible)
 		{
 			System.out.println("Ce contrat ne peut pas être rempli avec ces nombres.");
@@ -279,9 +283,8 @@ class Yams{
 		{
 			while (i < tab_die.length)
 			{
-				if (tab_die[i] == contract_nb)
+				if (tab_die[i++] == contract_nb)
 					tab_score[contract_nb - 1][index]++;
-				i++;
 			}
 			tab_score[contract_nb - 1][index] = tab_score[contract_nb - 1][index] * (contract_nb);
 		}
