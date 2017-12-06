@@ -244,18 +244,26 @@ class Yams{
 		}
 		else if (contract_nb == 9 || contract_nb == 10)
 		{
-			n = 0;
+			n = 1;
 			Arrays.sort(tab_die);
 			while (i < tab_die.length - 2)
 			{
+				if (tab_die[i] == tab_die[i + 1])
+					i++;
 				if ((tab_die[i] + 1) == tab_die[i + 1])
 					n++;
-				System.out.println("tab_die[i] = " + tab_die[i]);
-				System.out.println("n = " + n);
 				i++;
 			}
-			if ((n == 4 && contract_nb == 9) || (n == 5 && contract_nb == 10))
+			if (n >= 4 && contract_nb == 9)
+			{
 				possible = true;
+				tab_score[contract_nb][index] = 30;
+			}
+			if (n == 5 && contract_nb == 10)
+			{
+				possible = true;
+				tab_score[contract_nb][index] = 40;
+			}
 		}
 		if (!possible)
 		{
@@ -265,7 +273,7 @@ class Yams{
 		}
 	}
 
-	static int choose_contract (int [] tab_die, int [] [] tab_score, int index) {
+	static void choose_contract (int [] tab_die, int [] [] tab_score, int index) {
 
 		int		contract_nb;
 		int		i;
@@ -275,7 +283,7 @@ class Yams{
 		if (contract_nb < 1 || contract_nb > 13 || tab_score[contract_nb][index] != -1)
 		{
 			System.out.println("Merci d'en choisir un compris dans l'interval 1 à 13 et que vous n'avez pas encore validé.");
-			contract_nb = choose_contract(tab_die, tab_score, index);
+			choose_contract(tab_die, tab_score, index);
 		}
 		tab_score[contract_nb - 1][index]++;				//Mise à 0 du score pour le contrat selectionné par le joueur
 		i = 0;
@@ -294,7 +302,6 @@ class Yams{
 		else if (contract_nb >= 7)
 			verify_ifc_ispo(tab_die, tab_score, index, (contract_nb - 1));
 		System.out.println("Score réaliser pour le contrat " + contract_nb + " : " + tab_score[contract_nb - 1][index]);
-		return (contract_nb);
 	}
 
 	public static void main (String [] args){
@@ -309,22 +316,34 @@ class Yams{
 
 		System.out.println("Bonjour et bienvenue dans le jeu du YAMS.\nLes règles sont simples :\nChaque joueur a 3 lancés de dé par tour, et il y a 13 tours.\nÀ chaque lancé de dé, vous aurez le choix de garder ou non l'un ou plusieurs des 5 dés.\nLe but étant de faire un maximum de point en remplissant les contrats.\n");
 		System.out.print("Entrez le nombre de joueurs : ");
-		nb_player = in.nextInt();
+		while ()
+		{
+			nb_player = in.nextInt();
+		}
 
 		int [] [] tab_score = new int [15] [nb_player];
 		init_tab_score(tab_score);
 		String [] tab_firstname = new String [nb_player];
 		init_tab_firstname(tab_firstname, nb_player);
-		index = 0;
-		System.out.println("C'est à " + tab_firstname[index] + " de jouer");
-		test = 1;
-		while (test != 0)
+		i = 0;
+		while (i++ < 13)
 		{
-			System.out.print("Entrez le mot \"lancer\" pour lancer les dés : ");
-			tmp = sc.nextLine();
-			test = tmp.compareToIgnoreCase("lancer");
+			index = 0;
+			while (index < nb_player)
+			{
+				System.out.println("C'est à " + tab_firstname[index] + " de jouer");
+				test = 1;
+				while (test != 0)
+				{
+					System.out.print("Entrez le mot \"lancer\" pour lancer les dés : ");
+					tmp = sc.nextLine();
+					test = tmp.compareToIgnoreCase("lancer");
+				}
+				contracts_list(tab_score, index, tab_firstname);
+				choose_contract(time_to_play(tab_score, index), tab_score, index);
+				System.out.println("/n");
+				index++;
+			}
 		}
-		contracts_list(tab_score, index, tab_firstname);
-		contract_nb = choose_contract(time_to_play(tab_score, index), tab_score, index);
 	}
 }
