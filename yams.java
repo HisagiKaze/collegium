@@ -316,10 +316,7 @@ class Yams{
 
 		System.out.println("Bonjour et bienvenue dans le jeu du YAMS.\nLes règles sont simples :\nChaque joueur a 3 lancés de dé par tour, et il y a 13 tours.\nÀ chaque lancé de dé, vous aurez le choix de garder ou non l'un ou plusieurs des 5 dés.\nLe but étant de faire un maximum de point en remplissant les contrats.\n");
 		System.out.print("Entrez le nombre de joueurs : ");
-		while ()
-		{
-			nb_player = in.nextInt();
-		}
+		nb_player = in.nextInt();
 
 		int [] [] tab_score = new int [15] [nb_player];
 		init_tab_score(tab_score);
