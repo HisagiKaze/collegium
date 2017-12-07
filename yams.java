@@ -16,7 +16,7 @@ import java.util.Arrays;
 class Yams{
 	static Scanner in = new Scanner (System.in);
 
-	static void triche (int [] tab_die, int i) {
+	/*static void triche (int [] tab_die, int i) {
 
 		if (i == 1)
 		{
@@ -33,6 +33,58 @@ class Yams{
 			tab_die[2] = 5;
 			tab_die[3] = 5;
 			tab_die[4] = 3;
+		}
+	} */
+
+/* ******************************************************* */
+/*  clear_term use the command "clear" in the terminal     */
+/*  without disturb the game. 							   */
+/* ******************************************************* */
+
+	static void clear_term () {
+
+		System.out.print("\033[H\033[2J");
+		System.out.flush();
+	}
+
+	static int [] [] reverse_tab_arg (int [] [] ancient_tab, int a, int b) {
+
+		int	[] [] 	new_tab = new int [b] [a];
+		int			i;
+		int			y;
+		
+		i = 0;
+		while (i < new_tab.length)
+		{
+			y = 0;
+			while(y < new_tab[i].length)
+			{
+				new_tab[i][y] = ancient_tab[y][i];
+				y++;
+			}
+			i++;
+		}
+		return (new_tab);
+	}
+
+	static void print_tab_score (int [] [] tab_score, String [] tab_firstname) {
+
+		int	[] [] 	new_tab = reverse_tab_arg(tab_score, 15, tab_firstname.length);
+		int			i;
+		int			y;
+		
+		i = 0;
+		while (i < new_tab.length)
+		{
+			y = 0;
+			System.out.print("Scores pour " + tab_firstname[i] + " = | ");
+			while (y < new_tab[i].length)
+			{
+				System.out.print("" + new_tab[i][y] + " | ");
+				y++;
+			}
+			System.out.println();
+			i++;
 		}
 	}
 
@@ -90,6 +142,23 @@ class Yams{
 		i = 0;
 		while (i < tab_firstname.length)
 			System.out.println(tab_firstname[i++]);
+	}
+
+/* ******************************************************* */
+/*  sum_tab make the sum of an array and return an integer */
+/*	(the sum of it).									   */
+/* ******************************************************* */
+
+	static int sum_tab (int [] tab) {
+
+		int		i;
+		int		x;
+
+		i = 0;
+		x = 0;
+		while (i < tab.length)
+			x = tab[i++] + x;
+		return (x);
 	}
 
 /* ******************************************************* */
@@ -205,7 +274,7 @@ class Yams{
 				while (nb_die <= 4)
 					tab_die[nb_die++] = (int)(Math.random() * 6 + 1);
 			nb_die = 0;
-			triche(tab_die, k);
+			//triche(tab_die, k);
 			System.out.println("Les dés affichent  : " + tab_die [0] + ", " + tab_die[1] + ", " + tab_die[2] + ", " + tab_die[3] + ", " + tab_die[4]);
 			if (nb_essai < 3) 
 			{
@@ -228,7 +297,7 @@ class Yams{
 /*	It modify the simple array of integer nb_occ.		   */
 /* ******************************************************* */
 
-	static void ft_nbocc (int [] tab_die, int [] nb_occ) { // fonction nombre occurence
+	static void ft_nbocc (int [] tab_die, int [] nb_occ) {
 
 			int		i;
 			int		x;
@@ -249,34 +318,20 @@ class Yams{
 		}
 
 /* ******************************************************* */
-/*  sum_tab make the sum of the dice and return an integer */
-/*	(the sum of them).									   */
-/* ******************************************************* */
-
-	static int sum_tab (int [] tab_die) {
-
-		int		i;
-		int		x;
-
-		i = 0;
-		x = 0;
-		while (i < tab_die.length)
-			x = tab_die[i++] + x;
-		return (x);
-	}
-
-/* ******************************************************* */
 /*  verify_ifc_ispo verify if a contract is possible or	   */
 /*	not to fill. It returns nothing but modify tab_score.  */
 /* ******************************************************* */
 
 	static void verify_ifc_ispo (int [] tab_die, int [] [] tab_score, int index, int contract_nb) {
 
+		Scanner		sc = new Scanner (System.in);
+		String		tmp;
 		boolean		possible = false;
 		boolean		fullPair = false;
 		boolean		fullBre = false;
 		int			i;
 		int			n;
+		int			test;
 		int [] 		nb_occ = new int [6];
 
 		init_simple_tab(nb_occ, 0);
@@ -357,9 +412,23 @@ class Yams{
 		}
 		if (!possible)
 		{
-			System.out.println("Ce contrat ne peut pas être rempli avec ces nombres.");
-			tab_score[contract_nb][index] = -1;
-			choose_contract(tab_die, tab_score, index);
+			System.out.println("");
+			test = 1;
+			while (test != 0)
+			{
+				System.out.print("Ce contrat ne peut pas être rempli avec ces nombres.\nÊtes-vous sûr de vouloir le sacrifier ? (oui / non) : ");
+				tmp = sc.nextLine();
+				if ((test = tmp.compareToIgnoreCase("oui")) != 0)
+				{
+					if ((test = tmp.compareToIgnoreCase("non")) == 0)
+						{
+							tab_score[contract_nb][index] = -1;
+							choose_contract(tab_die, tab_score, index);
+						}
+				}
+				else
+						tab_score[contract_nb][index] = 0;
+			}
 		}
 	}
 
@@ -378,7 +447,7 @@ class Yams{
 
 		System.out.print("Quel contrat souhaitez-vous remplir ? (1 à 13) : ");
 		contract_nb = in.nextInt();
-		if (contract_nb < 1 || contract_nb > 13 || tab_score[contract_nb][index] != -1)
+		if (contract_nb < 1 || contract_nb > 13 || tab_score[contract_nb - 1][index] != -1)
 		{
 			System.out.println("Merci d'en choisir un compris dans l'interval 1 à 13 et que vous n'avez pas encore validé.");
 			choose_contract(tab_die, tab_score, index);
@@ -401,6 +470,39 @@ class Yams{
 		else if (contract_nb >= 7)
 			verify_ifc_ispo(tab_die, tab_score, index, (contract_nb - 1));
 		System.out.println("Score réaliser pour le contrat " + contract_nb + " : " + tab_score[contract_nb - 1][index]);
+	}
+
+	static void game_over (int [] [] tab_score, String [] tab_firstname) {
+
+		int		test;
+		int		i;
+		int	[] [] tab_score_reversed;
+		String	tmp;
+		Scanner	sc = new Scanner (System.in);
+
+		i = 0;
+		tab_score_reversed = reverse_tab_arg(tab_score, 15, tab_firstname.length);
+		while (i < tab_score_reversed.length)
+		{
+			if (sum_simple_contracts(tab_score_reversed[i]) >= 63  
+			tab_score[14][i] = sum_tab(tab_score_reversed[i]) + 1;
+			i++;
+		}
+		print_tab_score (tab_score, tab_firstname);
+		test = 1;
+		while (test != 0)
+		{
+			System.out.print("Voulez-vous rejouer ? (oui / non) :");
+			tmp = sc.nextLine();
+			if ((test = tmp.compareToIgnoreCase("oui")) != 0)
+			{
+				if ((test = tmp.compareToIgnoreCase("non")) == 0)
+						return ;
+			}
+			else
+				return;
+		}
+		return;
 	}
 
 /* ******************************************************* */
@@ -442,11 +544,14 @@ class Yams{
 					tmp = sc.nextLine();
 					test = tmp.compareToIgnoreCase("lancer");
 				}
+				clear_term();
 				contracts_list(tab_score, index, tab_firstname);
 				choose_contract(time_to_play(tab_score, index, i), tab_score, index);
 				System.out.println("\n");
+				//print_tab_score(tab_score, tab_firstname, index);
 				index++;
 			}
 		}
+		game_over(tab_score, tab_firstname);
 	}
 }
