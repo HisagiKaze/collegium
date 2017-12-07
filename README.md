@@ -1,8 +1,6 @@
 # Collegium
 My projects at University of Orléans - By Paul-Aurian POINOT
 
-| Projects	| Group	| Score		| Up-to-date|
-| ------------- |:-------------:| :-----:|:---:|
-| Yams	| Solo			| 		Unknown			| Yes	|
-
-YAMS Subject : https://goo.gl/azEUmY (PDF via Mega.nz)
+| Projects	|	Subject	| Group	| Score		| Up-to-date|
+| ------------- |:-----------------:|:-------------:| :-----:|:---:|
+| Yams	| https://goo.gl/azEUmY | Solo			| 		Unknown			| Yes	|
