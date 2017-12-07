@@ -1,8 +1,45 @@
+/* ****************************************************** */
+/*                                                        */
+/*                                                        */
+/*   yams.java             Github.com/HisagiKaze          */
+/*                                                        */
+/*   By: POINOT Paul-Aurian <poinot.p@gmail.com>          */
+/*                                                        */
+/*   Created: 2017/11/27 ‏‎16:51:38 by ppoinot              */
+/*   Updated: 2017/12/07 11:00:00 by ppoinot              */
+/*                                                        */
+/* ****************************************************** */
+
 import java.util.Scanner;
 import java.util.Arrays;
 
 class Yams{
 	static Scanner in = new Scanner (System.in);
+
+	static void triche (int [] tab_die, int i) {
+
+		if (i == 1)
+		{
+			tab_die[0] = 2;
+			tab_die[1] = 2;
+			tab_die[2] = 3;
+			tab_die[3] = 4;
+			tab_die[4] = 5;
+		}
+		else
+		{
+			tab_die[0] = 5;
+			tab_die[1] = 5;
+			tab_die[2] = 5;
+			tab_die[3] = 5;
+			tab_die[4] = 3;
+		}
+	}
+
+/* ******************************************************* */
+/*  init_simple_tab initializes a simple interger array    */
+/*  It is a commun fonction. 							   */
+/* ******************************************************* */
 
 	static void init_simple_tab (int [] tab, int n) {
 
@@ -13,6 +50,12 @@ class Yams{
 			tab[i++] = n;
 	}
 
+/* ******************************************************* */
+/*  init_tab_score initializes a double interger array     */
+/*  It's NOT a commun fonction. All the array is set to -1 */
+/*  [contract_number] [Current Player] 					   */
+/* ******************************************************* */
+
 	static void init_tab_score (int [] [] tab_score) {
 
 		int		i;
@@ -21,6 +64,12 @@ class Yams{
 		while (i < tab_score.length)
 			init_simple_tab(tab_score[i++], -1);
 	}
+
+/* ******************************************************* */
+/*  init_tab_firstname initializes a simple array of       */
+/*	String. It's NOT a commun fonction. All the array is   */
+/*	set with player(s) firstname. 					  	   */
+/* ******************************************************* */
 
 	static void init_tab_firstname (String [] tab_firstname, int nb_player) {
 
@@ -42,6 +91,12 @@ class Yams{
 		while (i < tab_firstname.length)
 			System.out.println(tab_firstname[i++]);
 	}
+
+/* ******************************************************* */
+/*  contracts_list displays all contracts available for    */
+/*	the current player. If tab_score[contract_nb][index]   */
+/*	equals -1 : the contact is available.			  	   */
+/* ******************************************************* */
 
 	static void contracts_list (int [] [] tab_score, int index, String tab_firstname []) {
 
@@ -74,6 +129,12 @@ class Yams{
 				System.out.println("(13) Chance : Somme des 5 dés\n\n");
 	}
 
+/* ******************************************************* */
+/*  relaunch_the_die ask is the current player wants	   */
+/*	relaunch the die number X. It checks if "oui" or "non  */
+/*	is well written and return a boolean.			  	   */
+/* ******************************************************* */
+
 	static boolean relaunch_the_die (int [] tab_die, int nb_die) {
 
 		Scanner	sc = new Scanner (System.in);
@@ -95,6 +156,12 @@ class Yams{
 		}
 		return (false);
 	}
+
+/* ******************************************************* */
+/*  retry ask is the current player wants relauch at least */
+/*	one die. It checks if "oui" or "non is also well	   */
+/*	written and return a boolean.					  	   */
+/* ******************************************************* */
 
 	static boolean retry () {
 
@@ -118,7 +185,13 @@ class Yams{
 		return (false);
 	}
 
-	static int [] time_to_play (int [] [] tab_score, int index) {
+/* ******************************************************* */
+/*  time_to_play randomizes one die by one die and diplays */
+/*	them together. It also count the number of try and it  */
+/*	returns a simple array of integer (the array of dice). */
+/* ******************************************************* */
+
+	static int [] time_to_play (int [] [] tab_score, int index, int k) {
 
 		int [] tab_die = new int [5];
 		int nb_essai;
@@ -132,6 +205,7 @@ class Yams{
 				while (nb_die <= 4)
 					tab_die[nb_die++] = (int)(Math.random() * 6 + 1);
 			nb_die = 0;
+			triche(tab_die, k);
 			System.out.println("Les dés affichent  : " + tab_die [0] + ", " + tab_die[1] + ", " + tab_die[2] + ", " + tab_die[3] + ", " + tab_die[4]);
 			if (nb_essai < 3) 
 			{
@@ -148,6 +222,11 @@ class Yams{
 		}
 		return (tab_die);
 	}
+
+/* ******************************************************* */
+/*  ft_nbocc counts the number of occurence of each die.   */
+/*	It modify the simple array of integer nb_occ.		   */
+/* ******************************************************* */
 
 	static void ft_nbocc (int [] tab_die, int [] nb_occ) { // fonction nombre occurence
 
@@ -169,6 +248,11 @@ class Yams{
 			}
 		}
 
+/* ******************************************************* */
+/*  sum_tab make the sum of the dice and return an integer */
+/*	(the sum of them).									   */
+/* ******************************************************* */
+
 	static int sum_tab (int [] tab_die) {
 
 		int		i;
@@ -181,7 +265,12 @@ class Yams{
 		return (x);
 	}
 
-	static void verify_ifc_ispo (int [] tab_die, int [] [] tab_score, int index, int contract_nb) { // verify ifcontract is possible
+/* ******************************************************* */
+/*  verify_ifc_ispo verify if a contract is possible or	   */
+/*	not to fill. It returns nothing but modify tab_score.  */
+/* ******************************************************* */
+
+	static void verify_ifc_ispo (int [] tab_die, int [] [] tab_score, int index, int contract_nb) {
 
 		boolean		possible = false;
 		boolean		fullPair = false;
@@ -244,13 +333,14 @@ class Yams{
 		}
 		else if (contract_nb == 9 || contract_nb == 10)
 		{
-			n = 1;
+			n = 2;
+			i = 1;
 			Arrays.sort(tab_die);
-			while (i < tab_die.length - 2)
+			while (i < tab_die.length - 1)
 			{
-				if (tab_die[i] == tab_die[i + 1])
+				if (tab_die[i] == tab_die[i - 1])
 					i++;
-				if ((tab_die[i] + 1) == tab_die[i + 1])
+				if ((tab_die[i] - 1) == tab_die[i - 1])
 					n++;
 				i++;
 			}
@@ -273,6 +363,14 @@ class Yams{
 		}
 	}
 
+/* ******************************************************* */
+/*  choose_contract asks the current player wich contract  */
+/*	he wants try to fill. If the contract number is not    */
+/*	correct or unavailable, it re-calls itself (recursive) */
+/*	It call verify_ifc_ispo if contract number is > or = 7 */
+/*	but different to 13 (chance).						   */
+/* ******************************************************* */
+
 	static void choose_contract (int [] tab_die, int [] [] tab_score, int index) {
 
 		int		contract_nb;
@@ -284,8 +382,9 @@ class Yams{
 		{
 			System.out.println("Merci d'en choisir un compris dans l'interval 1 à 13 et que vous n'avez pas encore validé.");
 			choose_contract(tab_die, tab_score, index);
+			return ;
 		}
-		tab_score[contract_nb - 1][index]++;				//Mise à 0 du score pour le contrat selectionné par le joueur
+		tab_score[contract_nb - 1][index]++;				//Set the score at 0 for the contract selected by the player
 		i = 0;
 		if (contract_nb >= 1 && contract_nb <= 6)
 		{
@@ -303,6 +402,13 @@ class Yams{
 			verify_ifc_ispo(tab_die, tab_score, index, (contract_nb - 1));
 		System.out.println("Score réaliser pour le contrat " + contract_nb + " : " + tab_score[contract_nb - 1][index]);
 	}
+
+/* ******************************************************* */
+/*  The main fonction is where start and end the programm  */
+/*	It ask the number of player, and if they want an IA to */
+/*	play with. It also count the thirteen tours and shows  */
+/*	who is turn to play. It calls the main subfonctions.   */
+/* ******************************************************* */
 
 	public static void main (String [] args){
 	
@@ -337,8 +443,8 @@ class Yams{
 					test = tmp.compareToIgnoreCase("lancer");
 				}
 				contracts_list(tab_score, index, tab_firstname);
-				choose_contract(time_to_play(tab_score, index), tab_score, index);
-				System.out.println("/n");
+				choose_contract(time_to_play(tab_score, index, i), tab_score, index);
+				System.out.println("\n");
 				index++;
 			}
 		}
