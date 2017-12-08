@@ -16,11 +16,11 @@ import java.util.Arrays;
 class Yams{
 	static Scanner in = new Scanner (System.in);
 
-	/*static void triche (int [] tab_die, int i) {
+	static void triche (int [] tab_die, int i) {
 
 		if (i == 1)
 		{
-			tab_die[0] = 2;
+			tab_die[0] = 1;
 			tab_die[1] = 2;
 			tab_die[2] = 3;
 			tab_die[3] = 4;
@@ -34,7 +34,7 @@ class Yams{
 			tab_die[3] = 5;
 			tab_die[4] = 3;
 		}
-	} */
+	} 
 
 /* ******************************************************* */
 /*  clear_term use the command "clear" in the terminal     */
@@ -161,6 +161,17 @@ class Yams{
 		return (x);
 	}
 
+	static void bonus (int [] [] tab_score, int i) {
+
+		int		x;
+
+		x = tab_score[0][i] + tab_score[1][i] + tab_score[2][i] + tab_score[3][i] + tab_score[4][i] + tab_score[5][i];
+		if (x >= 63)
+			tab_score[13][i] = 35;
+		else
+			tab_score[13][i] = 0;
+	}
+
 /* ******************************************************* */
 /*  contracts_list displays all contracts available for    */
 /*	the current player. If tab_score[contract_nb][index]   */
@@ -179,7 +190,7 @@ class Yams{
 		if (tab_score[3][index] < 0)
 				System.out.println("(4) Les 4 : Somme des 4");
 		if (tab_score[4][index] < 0)
-				System.out.println("(5) Les 5 : Somme des 4");
+				System.out.println("(5) Les 5 : Somme des 5");
 		if (tab_score[5][index] < 0)
 				System.out.println("(6) Les 6 : Somme des 6");
 		if (tab_score[6][index] < 0)
@@ -274,7 +285,7 @@ class Yams{
 				while (nb_die <= 4)
 					tab_die[nb_die++] = (int)(Math.random() * 6 + 1);
 			nb_die = 0;
-			//triche(tab_die, k);
+			triche(tab_die, k);
 			System.out.println("Les dés affichent  : " + tab_die [0] + ", " + tab_die[1] + ", " + tab_die[2] + ", " + tab_die[3] + ", " + tab_die[4]);
 			if (nb_essai < 3) 
 			{
@@ -388,15 +399,24 @@ class Yams{
 		}
 		else if (contract_nb == 9 || contract_nb == 10)
 		{
-			n = 2;
+			n = 1;
 			i = 1;
 			Arrays.sort(tab_die);
-			while (i < tab_die.length - 1)
+			while (i < tab_die.length)
 			{
 				if (tab_die[i] == tab_die[i - 1])
+				{
+					System.out.println("i prend la valeur " + (i + 1));
 					i++;
+				}
+				System.out.println("tab_die[i - 1] = " + tab_die[i - 1]);
+				System.out.println("tab_die[i] = " + tab_die[i]);
 				if ((tab_die[i] - 1) == tab_die[i - 1])
+				{
+					System.out.println("n prend la valeur " + (n + 1));
 					n++;
+				}
+				System.out.println("i prend la valeur " + (i + 1));
 				i++;
 			}
 			if (n >= 4 && contract_nb == 9)
@@ -484,7 +504,8 @@ class Yams{
 		tab_score_reversed = reverse_tab_arg(tab_score, 15, tab_firstname.length);
 		while (i < tab_score_reversed.length)
 		{
-			if (sum_simple_contracts(tab_score_reversed[i]) >= 63  
+			bonus(tab_score, i);
+			tab_score_reversed = reverse_tab_arg(tab_score, 15, tab_firstname.length);
 			tab_score[14][i] = sum_tab(tab_score_reversed[i]) + 1;
 			i++;
 		}
