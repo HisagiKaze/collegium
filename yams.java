@@ -52,21 +52,24 @@ class Yams
 
 		int		x;
 		boolean btest;
+		Scanner sc;
 
 		x = 0;
 		btest = false;
-		System.out.print("Entrer le nombre de joueurs : ");
+		sc = new Scanner (System.in);
 		do {
-			Scanner sc = new Scanner (System.in);
 			try {
+				System.out.print("Entrer le nombre de joueurs : ");
 				x = sc.nextInt();
 				btest = true;
 			}
-			catch (InputMismatchException e) {
+			catch (java.util.InputMismatchException e) {
 				System.out.println("Merci d'entrer un chiffre de type Integer.");
+				btest = false;
+				String purge = sc.next();
 			}
-			sc.close();
 		} while (btest == false);
+		sc.reset();
 		return (x);
 	}
 
