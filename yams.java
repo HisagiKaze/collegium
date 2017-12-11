@@ -6,17 +6,18 @@
 /*   By: POINOT Paul-Aurian <poinot.p@gmail.com>          */
 /*                                                        */
 /*   Created: 2017/11/27 ‏‎16:51:38 by ppoinot              */
-/*   Updated: 2017/12/07 11:00:00 by ppoinot              */
+/*   Updated: 2017/12/08 16:46:42 by ppoinot              */
 /*                                                        */
 /* ****************************************************** */
 
 import java.util.Scanner;
 import java.util.Arrays;
 
-class Yams{
+class Yams
+{
 	static Scanner in = new Scanner (System.in);
 
-	static void triche (int [] tab_die, int i) {
+	/*static void triche (int [] tab_die, int i) {
 
 		if (i == 1)
 		{
@@ -34,7 +35,7 @@ class Yams{
 			tab_die[3] = 5;
 			tab_die[4] = 3;
 		}
-	} 
+	} */
 
 /* ******************************************************* */
 /*  clear_term use the command "clear" in the terminal     */
@@ -46,6 +47,33 @@ class Yams{
 		System.out.print("\033[H\033[2J");
 		System.out.flush();
 	}
+
+	static int IME () {
+
+		int		x;
+		boolean btest;
+
+		x = 0;
+		btest = false;
+		System.out.print("Entrer le nombre de joueurs : ");
+		do {
+			Scanner sc = new Scanner (System.in);
+			try {
+				x = sc.nextInt();
+				btest = true;
+			}
+			catch (InputMismatchException e) {
+				System.out.println("Merci d'entrer un chiffre de type Integer.");
+			}
+			sc.close();
+		} while (btest == false);
+		return (x);
+	}
+
+/* ******************************************************* */
+/*  reverse_tab_arg reverses the arguments of an arrays &  */
+/*  returns a new array (new_tab).						   */
+/* ******************************************************* */
 
 	static int [] [] reverse_tab_arg (int [] [] ancient_tab, int a, int b) {
 
@@ -66,6 +94,11 @@ class Yams{
 		}
 		return (new_tab);
 	}
+ 
+/* ******************************************************* */
+/*  print_tab_score displays the tab_score on the terminal */
+/* 	Interesting add-on for the player.					   */
+/* ******************************************************* */
 
 	static void print_tab_score (int [] [] tab_score, String [] tab_firstname) {
 
@@ -77,13 +110,31 @@ class Yams{
 		while (i < new_tab.length)
 		{
 			y = 0;
-			System.out.print("Scores pour " + tab_firstname[i] + " = | ");
+			System.out.print("Scores pour " + tab_firstname[i] + " (-1 pour un contrat non-rempli) = | ");
 			while (y < new_tab[i].length)
 			{
 				System.out.print("" + new_tab[i][y] + " | ");
 				y++;
 			}
-			System.out.println();
+			System.out.println("\n");
+			i++;
+		}
+	}
+
+/* ******************************************************* */
+/*  print_tab_wins displays the tab_wins on the terminal   */
+/* 	A BONUS part.										   */
+/* ******************************************************* */
+
+	static void print_tab_wins (int [] tab_wins, String [] tab_firstname) {
+
+		int		i;
+
+		i = 0;
+		System.out.print("\n");
+		while (i < tab_wins.length)
+		{
+			System.out.println(tab_firstname[i] + " a " + tab_wins[i] + " partie(s) gagnée(s).");
 			i++;
 		}
 	}
@@ -160,6 +211,11 @@ class Yams{
 			x = tab[i++] + x;
 		return (x);
 	}
+
+/* ******************************************************* */
+/*  bonus counts if the current player make 63 or more     */
+/*	with the sum of contract 1 to 6 included.			   */
+/* ******************************************************* */
 
 	static void bonus (int [] [] tab_score, int i) {
 
@@ -285,7 +341,7 @@ class Yams{
 				while (nb_die <= 4)
 					tab_die[nb_die++] = (int)(Math.random() * 6 + 1);
 			nb_die = 0;
-			triche(tab_die, k);
+			//triche(tab_die, k);
 			System.out.println("Les dés affichent  : " + tab_die [0] + ", " + tab_die[1] + ", " + tab_die[2] + ", " + tab_die[3] + ", " + tab_die[4]);
 			if (nb_essai < 3) 
 			{
@@ -404,19 +460,10 @@ class Yams{
 			Arrays.sort(tab_die);
 			while (i < tab_die.length)
 			{
-				if (tab_die[i] == tab_die[i - 1])
-				{
-					System.out.println("i prend la valeur " + (i + 1));
+				if ((tab_die[i] == tab_die[i - 1]) && i < 4)
 					i++;
-				}
-				System.out.println("tab_die[i - 1] = " + tab_die[i - 1]);
-				System.out.println("tab_die[i] = " + tab_die[i]);
 				if ((tab_die[i] - 1) == tab_die[i - 1])
-				{
-					System.out.println("n prend la valeur " + (n + 1));
 					n++;
-				}
-				System.out.println("i prend la valeur " + (i + 1));
 				i++;
 			}
 			if (n >= 4 && contract_nb == 9)
@@ -492,7 +539,12 @@ class Yams{
 		System.out.println("Score réaliser pour le contrat " + contract_nb + " : " + tab_score[contract_nb - 1][index]);
 	}
 
-	static void game_over (int [] [] tab_score, String [] tab_firstname) {
+/* ******************************************************* */
+/*  game_over add the bonus (63 or more) to the tab score  */
+/*  and displays the tab_score.							   */
+/* ******************************************************* */
+
+	static boolean game_over (int [] [] tab_score, String [] tab_firstname) {
 
 		int		test;
 		int		i;
@@ -518,61 +570,121 @@ class Yams{
 			if ((test = tmp.compareToIgnoreCase("oui")) != 0)
 			{
 				if ((test = tmp.compareToIgnoreCase("non")) == 0)
-						return ;
+						return (false);
 			}
 			else
-				return;
+				return (true);
 		}
-		return;
+		return (false);
 	}
 
 /* ******************************************************* */
-/*  The main fonction is where start and end the programm  */
-/*	It ask the number of player, and if they want an IA to */
-/*	play with. It also count the thirteen tours and shows  */
-/*	who is turn to play. It calls the main subfonctions.   */
+/*  winner_name search and display the winner of the game. */
+/*  If there are several winners, it displays all of them. */
 /* ******************************************************* */
 
-	public static void main (String [] args){
+	static int winner_name (int [] [] tab_score, String [] tab_firstname, int [] tab_wins) {
+
+		int		x;
+		int		i;
+		int		nb_winner;
+		int		[] who_win;
+
+		i = 0;
+		x = -2;
+		who_win = new int [tab_firstname.length];
+		init_simple_tab(who_win, 0);
+		while (i < tab_score[14].length)
+		{
+			if (x < tab_score[14][i])
+				x = tab_score[14][i];
+			i++;
+		}
+		i = 0;
+		nb_winner = 0;
+		while (i < tab_score[14].length)
+		{
+			if (x == tab_score[14][i])
+			{
+				who_win[i] = 1;
+				tab_wins[i]++;
+				nb_winner++;
+			}
+			i++;
+		}
+		if (nb_winner == 1)
+			System.out.print("\nLe vainqueur est ");
+		else if (nb_winner > 1)
+			System.out.print("Les vainqueurs ex aequo sont ");
+		i = 0;
+		while (i < who_win.length)
+		{
+			if (who_win[i] == 1)
+				System.out.print(tab_firstname[i] + " ");
+			i++;
+		}
+		return (nb_winner);
+	}
+
+/* ******************************************************* */
+/*  The main fonction is where start and end the programm. */
+/*	It ask the number of player. It also count the 		   */
+/*	thirteen tours and show who is turn to play. It calls  */
+/*	the main subfonctions.   							   */
+/* ******************************************************* */
+
+	public static void main (String [] args) {
 	
+		boolean	p_again;
 		int		nb_player;
 		int		index;
 		int		test;
 		int		contract_nb;
+		int		i;
+		int		[] tab_wins;
+		int		[] [] tab_score;
 		String	tmp;
+		String	[] tab_firstname;
 		Scanner	sc = new Scanner (System.in);
-		int i;
 
 		System.out.println("Bonjour et bienvenue dans le jeu du YAMS.\nLes règles sont simples :\nChaque joueur a 3 lancés de dé par tour, et il y a 13 tours.\nÀ chaque lancé de dé, vous aurez le choix de garder ou non l'un ou plusieurs des 5 dés.\nLe but étant de faire un maximum de point en remplissant les contrats.\n");
-		System.out.print("Entrez le nombre de joueurs : ");
-		nb_player = in.nextInt();
+		//nb_player = in.nextInt();
+		nb_player = IME();
 
-		int [] [] tab_score = new int [15] [nb_player];
-		init_tab_score(tab_score);
-		String [] tab_firstname = new String [nb_player];
+		tab_score = new int [15] [nb_player];
+		tab_firstname = new String [nb_player];
+		tab_wins = new int [nb_player];
 		init_tab_firstname(tab_firstname, nb_player);
-		i = 0;
-		while (i++ < 13)
+		init_simple_tab(tab_wins, 0);
+		p_again = true;
+		while (p_again)
 		{
-			index = 0;
-			while (index < nb_player)
+			i = 0;
+			init_tab_score(tab_score);
+			while (i++ < 13)
 			{
-				System.out.println("C'est à " + tab_firstname[index] + " de jouer");
-				test = 1;
-				while (test != 0)
+				index = 0;
+				while (index < nb_player)
 				{
-					System.out.print("Entrez le mot \"lancer\" pour lancer les dés : ");
-					tmp = sc.nextLine();
-					test = tmp.compareToIgnoreCase("lancer");
+					System.out.println("C'est à " + tab_firstname[index] + " de jouer");
+					test = 1;
+					while (test != 0)
+					{
+						System.out.print("Entrez le mot \"lancer\" pour lancer les dés : ");
+						tmp = sc.nextLine();
+						test = tmp.compareToIgnoreCase("lancer");
+					}
+					clear_term();
+					contracts_list(tab_score, index, tab_firstname);
+					choose_contract(time_to_play(tab_score, index, i), tab_score, index);
+					System.out.println("\n");
+					index++;
 				}
-				clear_term();
-				contracts_list(tab_score, index, tab_firstname);
-				choose_contract(time_to_play(tab_score, index, i), tab_score, index);
-				System.out.println("\n");
-				//print_tab_score(tab_score, tab_firstname, index);
-				index++;
+				print_tab_score(tab_score, tab_firstname);
 			}
+			winner_name(tab_score, tab_firstname, tab_wins);
+			print_tab_wins(tab_wins, tab_firstname);
+			p_again = game_over(tab_score, tab_firstname);
 		}
-		game_over(tab_score, tab_firstname);
 	}
 }
