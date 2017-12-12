@@ -6,7 +6,7 @@
 /*   By: POINOT Paul-Aurian <poinot.p@gmail.com>          */
 /*                                                        */
 /*   Created: 2017/11/27 ‏‎16:51:38 by ppoinot              */
-/*   Updated: 2017/12/08 16:46:42 by ppoinot              */
+/*   Updated: 2017/12/11 19:50:42 by ppoinot              */
 /*                                                        */
 /* ****************************************************** */
 
@@ -16,26 +16,6 @@ import java.util.Arrays;
 class Yams
 {
 	static Scanner in = new Scanner (System.in);
-
-	/*static void triche (int [] tab_die, int i) {
-
-		if (i == 1)
-		{
-			tab_die[0] = 1;
-			tab_die[1] = 2;
-			tab_die[2] = 3;
-			tab_die[3] = 4;
-			tab_die[4] = 5;
-		}
-		else
-		{
-			tab_die[0] = 5;
-			tab_die[1] = 5;
-			tab_die[2] = 5;
-			tab_die[3] = 5;
-			tab_die[4] = 3;
-		}
-	} */
 
 /* ******************************************************* */
 /*  clear_term use the command "clear" in the terminal     */
@@ -48,7 +28,12 @@ class Yams
 		System.out.flush();
 	}
 
-	static int IME () {
+/* ******************************************************* */
+/*  IME checks if the user enter an INTEGER and not	       */
+/*  something else instead. 							   */
+/* ******************************************************* */
+
+	static int IME (int i) {
 
 		int		x;
 		boolean btest;
@@ -57,9 +42,27 @@ class Yams
 		x = 0;
 		btest = false;
 		sc = new Scanner (System.in);
-		do {
+		if (i == 1)
+		{
+			do {
+				try {
+					System.out.print("Entrer le nombre de joueurs : ");
+					x = sc.nextInt();
+					btest = true;
+				}
+				catch (java.util.InputMismatchException e) {
+					System.out.println("Merci d'entrer un chiffre de type Integer.");
+					btest = false;
+					String purge = sc.next();
+				}
+			} while (btest == false);
+			sc.reset();
+		}
+		else
+		{
+			do {
 			try {
-				System.out.print("Entrer le nombre de joueurs : ");
+				System.out.print("Quel contrat souhaitez-vous remplir ? (1 à 13) : ");;
 				x = sc.nextInt();
 				btest = true;
 			}
@@ -70,6 +73,7 @@ class Yams
 			}
 		} while (btest == false);
 		sc.reset();
+		}
 		return (x);
 	}
 
@@ -114,7 +118,7 @@ class Yams
 		{
 			y = 0;
 			System.out.print("Scores pour " + tab_firstname[i] + " (-1 pour un contrat non-rempli) = | ");
-			while (y < new_tab[i].length)
+			while (y < new_tab[i].length - 2)
 			{
 				System.out.print("" + new_tab[i][y] + " | ");
 				y++;
@@ -344,7 +348,6 @@ class Yams
 				while (nb_die <= 4)
 					tab_die[nb_die++] = (int)(Math.random() * 6 + 1);
 			nb_die = 0;
-			//triche(tab_die, k);
 			System.out.println("Les dés affichent  : " + tab_die [0] + ", " + tab_die[1] + ", " + tab_die[2] + ", " + tab_die[3] + ", " + tab_die[4]);
 			if (nb_essai < 3) 
 			{
@@ -515,8 +518,7 @@ class Yams
 		int		contract_nb;
 		int		i;
 
-		System.out.print("Quel contrat souhaitez-vous remplir ? (1 à 13) : ");
-		contract_nb = in.nextInt();
+		contract_nb = IME(2);
 		if (contract_nb < 1 || contract_nb > 13 || tab_score[contract_nb - 1][index] != -1)
 		{
 			System.out.println("Merci d'en choisir un compris dans l'interval 1 à 13 et que vous n'avez pas encore validé.");
@@ -547,7 +549,7 @@ class Yams
 /*  and displays the tab_score.							   */
 /* ******************************************************* */
 
-	static boolean game_over (int [] [] tab_score, String [] tab_firstname) {
+	static boolean game_over (int [] [] tab_score, String [] tab_firstname, int [] tab_wins) {
 
 		int		test;
 		int		i;
@@ -556,7 +558,7 @@ class Yams
 		Scanner	sc = new Scanner (System.in);
 
 		i = 0;
-		tab_score_reversed = reverse_tab_arg(tab_score, 15, tab_firstname.length);
+		tab_score_reversed = reverse_tab_arg(tab_score, 15, tab_score[14].length);
 		while (i < tab_score_reversed.length)
 		{
 			bonus(tab_score, i);
@@ -564,7 +566,9 @@ class Yams
 			tab_score[14][i] = sum_tab(tab_score_reversed[i]) + 1;
 			i++;
 		}
-		print_tab_score (tab_score, tab_firstname);
+		winner_name(tab_score, tab_firstname, tab_wins);
+		print_tab_wins(tab_wins, tab_firstname);
+		//print_tab_score (tab_score, tab_firstname);
 		test = 1;
 		while (test != 0)
 		{
@@ -595,6 +599,7 @@ class Yams
 
 		i = 0;
 		x = -2;
+		nb_winner = 0;
 		who_win = new int [tab_firstname.length];
 		init_simple_tab(who_win, 0);
 		while (i < tab_score[14].length)
@@ -604,7 +609,6 @@ class Yams
 			i++;
 		}
 		i = 0;
-		nb_winner = 0;
 		while (i < tab_score[14].length)
 		{
 			if (x == tab_score[14][i])
@@ -651,8 +655,7 @@ class Yams
 		Scanner	sc = new Scanner (System.in);
 
 		System.out.println("Bonjour et bienvenue dans le jeu du YAMS.\nLes règles sont simples :\nChaque joueur a 3 lancés de dé par tour, et il y a 13 tours.\nÀ chaque lancé de dé, vous aurez le choix de garder ou non l'un ou plusieurs des 5 dés.\nLe but étant de faire un maximum de point en remplissant les contrats.\n");
-		//nb_player = in.nextInt();
-		nb_player = IME();
+		nb_player = IME(1);
 
 		tab_score = new int [15] [nb_player];
 		tab_firstname = new String [nb_player];
@@ -685,9 +688,9 @@ class Yams
 				}
 				print_tab_score(tab_score, tab_firstname);
 			}
-			winner_name(tab_score, tab_firstname, tab_wins);
-			print_tab_wins(tab_wins, tab_firstname);
-			p_again = game_over(tab_score, tab_firstname);
+			//winner_name(tab_score, tab_firstname, tab_wins);
+			//print_tab_wins(tab_wins, tab_firstname);
+			p_again = game_over(tab_score, tab_firstname, tab_wins);
 		}
 	}
 }
