@@ -1,6 +1,5 @@
 /* ****************************************************** */
 /*                                                        */
-/*                                                        */
 /*   yams.java             Github.com/HisagiKaze          */
 /*                                                        */
 /*   By: POINOT Paul-Aurian <poinot.p@gmail.com>          */
@@ -17,6 +16,15 @@ class Yams
 {
 	static Scanner in = new Scanner (System.in);
 
+	/*static void	triche (int [] tab_die) {
+
+		tab_die[0] = 1;
+		tab_die[1] = 2;
+		tab_die[2] = 3;
+		tab_die[3] = 5;
+		tab_die[4] = 6;
+	}*/
+
 /* ******************************************************* */
 /*  clear_term use the command "clear" in the terminal     */
 /*  without disturb the game. 							   */
@@ -30,7 +38,7 @@ class Yams
 
 /* ******************************************************* */
 /*  IME checks if the user enter an INTEGER and not	       */
-/*  something else instead. 							   */
+/*  something else instead. IME = InputMismatchException   */
 /* ******************************************************* */
 
 	static int IME (int i) {
@@ -348,6 +356,7 @@ class Yams
 				while (nb_die <= 4)
 					tab_die[nb_die++] = (int)(Math.random() * 6 + 1);
 			nb_die = 0;
+			//triche(tab_die);
 			System.out.println("Les dés affichent  : " + tab_die [0] + ", " + tab_die[1] + ", " + tab_die[2] + ", " + tab_die[3] + ", " + tab_die[4]);
 			if (nb_essai < 3) 
 			{
@@ -688,8 +697,6 @@ class Yams
 				}
 				print_tab_score(tab_score, tab_firstname);
 			}
-			//winner_name(tab_score, tab_firstname, tab_wins);
-			//print_tab_wins(tab_wins, tab_firstname);
 			p_again = game_over(tab_score, tab_firstname, tab_wins);
 		}
 	}
