@@ -1,11 +1,11 @@
 /* ****************************************************** */
 /*                                                        */
-/*   yams.java             Github.com/HisagiKaze          */
+/*   yamsIA.java           Github.com/HisagiKaze          */
 /*                                                        */
 /*   By: POINOT Paul-Aurian <poinot.p@gmail.com>          */
 /*                                                        */
 /*   Created: 2017/11/27 ‏‎16:51:38 by ppoinot              */
-/*   Updated: 2017/12/11 19:50:42 by ppoinot              */
+/*   Updated: 2017/12/14 09:45:42 by ppoinot              */
 /*                                                        */
 /* ****************************************************** */
 
@@ -17,16 +17,13 @@ class YamsIA
 
 	static Scanner in = new Scanner (System.in);
 
-	/*static void	triche (int [] tab_die) {
+/* ******************************************************* */
+/*  IA_fill_contract looks if it can be fill the first	   */
+/*  contract, if it does, it does with 3 launches of dice  */
+/*	by keeping the best score of them.					   */
+/* ******************************************************* */
 
-		tab_die[0] = 1;
-		tab_die[1] = 2;
-		tab_die[2] = 3;
-		tab_die[3] = 5;
-		tab_die[4] = 6;
-	}*/
-
-	static int IA_randomize (int a) {
+	static int IA_fill_contract (int a) {
 
 		int		[] x;
 		int		i;
@@ -147,6 +144,11 @@ class YamsIA
 		return (0);
 	}
 
+/* ******************************************************* */
+/*  IA checks if it is its time to play. If yes, it calls  */
+/*  IA_fill_contract.		 							   */
+/* ******************************************************* */
+
 	static boolean IA (int [] [] tab_score, String [] tab_firstname, int index) {
 
 		int		i;
@@ -164,7 +166,7 @@ class YamsIA
 				if (tab_score[i][index] == -1)
 				{
 					btest = true;
-					tab_score[i][index] = IA_randomize(i + 1);
+					tab_score[i][index] = IA_fill_contract(i + 1);
 				}
 				i++;
 			}
@@ -286,8 +288,7 @@ class YamsIA
 	}
 
 /* ******************************************************* */
-/*  print_tab_wins displays the tab_wins on the terminal   */
-/* 	A BONUS part.										   */
+/*  print_tab_wins displays the tab_wins on the terminal.  */
 /* ******************************************************* */
 
 	static void print_tab_wins (int [] tab_wins, String [] tab_firstname) {
@@ -506,7 +507,6 @@ class YamsIA
 				while (nb_die <= 4)
 					tab_die[nb_die++] = (int)(Math.random() * 6 + 1);
 			nb_die = 0;
-			//triche(tab_die);
 			System.out.println("Les dés affichent  : " + tab_die [0] + ", " + tab_die[1] + ", " + tab_die[2] + ", " + tab_die[3] + ", " + tab_die[4]);
 			if (nb_essai < 3) 
 			{
@@ -727,7 +727,6 @@ class YamsIA
 		}
 		winner_name(tab_score, tab_firstname, tab_wins);
 		print_tab_wins(tab_wins, tab_firstname);
-		//print_tab_score (tab_score, tab_firstname);
 		test = 1;
 		while (test != 0)
 		{
